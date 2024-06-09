@@ -77,10 +77,14 @@ class PurchaseOrderViewSet(viewsets.ModelViewSet):
         return Response({'status': 'acknowledged'})
 
     def calculate_performance(self, vendor):
-        # Placeholder logic to calculate performance
-        performance_score = 0
-        # Add your actual performance calculation logic here
-        return performance_score
+
+        try:
+            vendor = Vendor.objects.get(pk=vendor)
+        except Vendor.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        serializer = HistoricalPerformanceSerializer(vendor)
+        return Response(serializer.data)
 
 
 class HistoricalPerformanceViewSet(viewsets.ModelViewSet):
